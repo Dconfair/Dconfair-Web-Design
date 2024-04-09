@@ -1,0 +1,4 @@
+/*
+Use this file to write your JavaScript code.
+Delete this comment when you start writing your code.
+ */
