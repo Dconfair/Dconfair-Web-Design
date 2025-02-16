@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trello-Style Board</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('your-background-image.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            text-align: center;
+        }
+        .board {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .column {
+            width: 300px;
+            min-height: 400px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+            transition: transform 0.2s;
+        }
+        .column:hover {
+            transform: scale(1.05);
+        }
+        .task, .tag {
+            background: #1e1e1e;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: grab;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.2);
+            transition: transform 0.2s;
+        }
+        .task:hover, .tag:hover {
+            transform: scale(1.05);
+        }
+        .drop-zone {
+            min-height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .label {
+            display: inline-block;
+            padding: 5px;
+            margin: 2px 2px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .label.orange { background: orange; }
+        .label.red { background: red; }
+        .label.blue { background: blue; }
+        .label.green { background: green; }
+        .label.purple { background: purple; }
+        .label.teal { background: teal; }
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            border-radius: 4px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flight Schedule Board</h1>
+    <div>
+        <input type="text" id="eventTitle" placeholder="Event Title">
+        <input type="text" id="eventFlight" placeholder="Flight Number">
+        <button onclick="addEvent()">Add Event</button>
+    </div>
+    <div class="board">
+        <div class="column" id="tags">
+            <h3>Available Tags</h3>
+            <div class="tag label orange" id="tag1" draggable="true" ondragstart="drag(event)">Cabin Crew Needed</div>
+            <div class="tag label red" id="tag2" draggable="true" ondragstart="drag(event)">Ground Crew Needed</div>
+            <div class="tag label blue" id="tag3" draggable="true" ondragstart="drag(event)">Pilot Needed</div>
+            <div class="tag label green" id="tag4" draggable="true" ondragstart="drag(event)">Pending Request</div>
+            <div class="tag label purple" id="tag5" draggable="true" ondragstart="drag(event)">Cabin Crew Assigned</div>
+            <div class="tag label teal" id="tag6" draggable="true" ondragstart="drag(event)">Ground Crew Assigned</div>
+            <div class="tag label orange" id="tag7" draggable="true" ondragstart="drag(event)">Pilot Assigned</div>
+        </div>
+        <div class="column" id="template">
+            <h3>Template</h3>
+        </div>
+        <div class="column" id="scheduled">
+            <h3>Scheduled</h3>
+            <div class="drop-zone" ondrop="drop(event, this)" ondragover="allowDrop(event)"></div>
+        </div>
+        <div class="column" id="finished">
+            <h3>Finished - Successful</h3>
+            <div class="drop-zone" ondrop="drop(event, this)" ondragover="allowDrop(event)"></div>
+        </div>
+        <div class="column" id="cancelled">
+            <h3>Cancelled</h3>
+            <div class="drop-zone" ondrop="drop(event, this)" ondragover="allowDrop(event)"></div>
+        </div>
+    </div>
+
+    <script>
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+
+        function drop(event, target) {
+            event.preventDefault();
+            var data = event.dataTransfer.getData("text");
+            var element = document.getElementById(data);
+            if (target.classList.contains('drop-zone')) {
+                target.appendChild(element);
+            }
+        }
+
+        function addEvent() {
+            let title = document.getElementById("eventTitle").value;
+            let flightNumber = document.getElementById("eventFlight").value;
+            
+            let task = document.createElement("div");
+            task.className = "task";
+            task.draggable = true;
+            task.ondragstart = drag;
+            
+            task.innerHTML = `<strong>${title}</strong><br>Flight: ${flightNumber}`;
+            document.getElementById("template").appendChild(task);
+            
+            document.getElementById("eventTitle").value = "";
+            document.getElementById("eventFlight").value = "";
+        }
+    </script>
+</body>
+</html>
